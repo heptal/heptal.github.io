@@ -10,6 +10,7 @@ Using the [`hs.socket`](https://github.com/Hammerspoon/hammerspoon/pull/791) ext
 Using [`hs.menubar`](http://www.hammerspoon.org/docs/hs.menubar.html), I've created a series of menubar items to assist with controlling playback. Hovering over the play/pause icon shows the current track. Hovering over the next icon shows the next track in the playlist:  
 
 ![](media/paused.png)  
+
 ![](media/tooltip.png)
 
 The icons are defined with [ASCIImage](https://github.com/cparnot/ASCIImage) which work seamlessly [anywhere](http://www.hammerspoon.org/docs/hs.image.html#imageFromASCII) in Hammerspoon:  
