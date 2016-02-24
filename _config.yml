@@ -18,4 +18,6 @@ url: "http://yourdomain.com" # the base hostname & protocol for your site
 github_username:  heptal
 
 # Build settings
-markdown: redcarpet
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
