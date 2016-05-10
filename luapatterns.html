@@ -3,7 +3,7 @@
 
 <head>
     <title>Lua Pattern Matcher</title>
-    <script src="build/weblua.js"></script>
+    <script src="weblua.js"></script>
     <style>
     #header {
         display: inline-flex;
@@ -68,10 +68,7 @@
     window.onload = function() {
         function highlight() {
             var pattern = document.getElementById("pattern").value
-            console.log(pattern)
             var text = document.getElementById("src").value
-            console.log(text)
-            console.log(text)
             Lua.exec("text = [[" + text + "]]");
             Lua.exec("pattern = nil");
             Lua.exec("pattern = [[#" + pattern + "#]]");
@@ -79,7 +76,6 @@
                 return
             }
             Lua.exec(`pattern = pattern:gsub('^#',''):gsub('#$','')`)
-            console.log(Lua.eval("pattern"))
 
             var result = Lua.eval(`text:gsub(pattern, function(s) return '##open##'..s..'##close##' end):gsub(map, function(s) return entities[s] end):gsub('##open##', '<span>'):gsub('##close##', '</span>'):gsub('\\n', '<br>')`)
 
@@ -87,15 +83,12 @@
                 return
             };
             result = result[0];
-            console.log(result);
             document.getElementById('result').innerHTML = result;
         }
 
         (function() {
             Lua.initialize();
             Lua.exec(`map = '[&<>/\\\\"\\']'`)
-            console.log(Lua.eval('map'))
-
             var highlight = `function highlite(text, pattern) text:gsub(pattern, function(s) return '<span>'..s..'</span>' end) end`
             var entities = `entities = {["&"]="&amp;",["<"]="&lt;",[">"]="&gt;",['"']="&quot;",["'"]="&#39;",["/"]="&#x2F;"}`
             Lua.exec(entities)
