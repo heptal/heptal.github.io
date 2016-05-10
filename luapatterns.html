@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Lua Pattern Matcher</title>
+    <script src="build/weblua.js"></script>
+    <style>
+    #header {
+        display: inline-flex;
+    }
+    
+    #topleft {
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    #description {
+        width: 400px;
+    }
+    
+    #legend {
+        margin: 10px;
+        padding: 10px;
+        margin-left: 20px;
+        background-color: #f1f1f1;
+    }
+    
+    #pattern {
+        font-size: 20px;
+        height: 30px;
+        width: 300px;
+        margin-bottom: 5px;
+    }
+    
+    .text-container {
+        display: inline-flex;
+    }
+    
+    #result {
+        margin: 0;
+        border-left: none;
+        white-space: pre-wrap;
+    }
+    
+    #src,
+    #result {
+        overflow-y: scroll;
+        font-family: monospace;
+        padding: 2px;
+        font-size: 1em;
+        width: 600px;
+        height: 300px;
+        word-wrap: break-word;
+        border: 1px solid black;
+    }
+    
+    textarea {
+        outline: none;
+        resize: none;
+    }
+    
+    span {
+        background: rgba(0, 0, 200, 0.2)
+    }
+    </style>
+    <script>
+    window.onload = function() {
+        function highlight() {
+            var pattern = document.getElementById("pattern").value
+            console.log(pattern)
+            var text = document.getElementById("src").value
+            console.log(text)
+            console.log(text)
+            Lua.exec("text = [[" + text + "]]");
+            Lua.exec("pattern = nil");
+            Lua.exec("pattern = [[#" + pattern + "#]]");
+            if (Lua.eval("pattern")[0] == undefined) {
+                return
+            }
+            Lua.exec(`pattern = pattern:gsub('^#',''):gsub('#$','')`)
+            console.log(Lua.eval("pattern"))
+
+            var result = Lua.eval(`text:gsub(pattern, function(s) return '##open##'..s..'##close##' end):gsub(map, function(s) return entities[s] end):gsub('##open##', '<span>'):gsub('##close##', '</span>'):gsub('\\n', '<br>')`)
+
+            if (result == undefined) {
+                return
+            };
+            result = result[0];
+            console.log(result);
+            document.getElementById('result').innerHTML = result;
+        }
+
+        (function() {
+            Lua.initialize();
+            Lua.exec(`map = '[&<>/\\\\"\\']'`)
+            console.log(Lua.eval('map'))
+
+            var highlight = `function highlite(text, pattern) text:gsub(pattern, function(s) return '<span>'..s..'</span>' end) end`
+            var entities = `entities = {["&"]="&amp;",["<"]="&lt;",[">"]="&gt;",['"']="&quot;",["'"]="&#39;",["/"]="&#x2F;"}`
+            Lua.exec(entities)
+            Lua.exec(highlight)
+        })()
+        document.getElementById("pattern").onkeyup = function(e) {
+            highlight()
+        }
+        document.getElementById("src").onkeyup = function(e) {
+            highlight()
+        }
+
+    }
+    </script>
+</head>
+
+<body>
+    <h2>Lua Pattern Matcher</h2>
+    <div id="header">
+        <div id="topleft">
+            <div id="description">
+                <p>A simple and hacky Lua pattern matcher a la <a href="https://regex101.com">Regex101</a> but much worse. Uses <a href="https://github.com/campadrenalin/weblua">weblua.js</a>, an emscripten build of Lua.</p>
+                <p>Enter a pattern and some text to highlight matches.</p>
+            </div>
+            <input id="pattern" type="text" placeholder="pattern, [%p%d]">
+        </div>
+        <pre id="legend">.   all characters
+%a  letters
+%b  balanced delimiters
+%c  control characters
+%d  digits
+%l  lower case letters
+%p  punctuation characters
+%s  space characters
+%u  upper case letters
+%w  alphanumeric characters
+%x  hexadecimal digits
+%z  the character with representation 0</pre>
+    </div>
+    <div id="matcher">
+        <div class='text-container'>
+            <textarea id="src" class="textbox" placeholder="text to match"></textarea>
+            <pre id="result" class="textbox"></pre>
+        </div>
+    </div>
+</body>
+
+</html>
